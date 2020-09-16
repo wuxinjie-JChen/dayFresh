@@ -1,0 +1,88 @@
+<meta charset="UTF-8">
+
+        <form id="ffff" method="post" enctype="multipart/form-data">
+            <div style="margin-bottom:20px" class="gname">
+                <input id="goodsName" value="aaa" class="easyui-textbox" name="goodsName" style="width:100%" data-options="label:'商品名称:',required:true">
+            </div>
+             <div style="margin-bottom:20px">
+                <select id="typeNo" class="easyui-combobox" name="typeNo" label="商品类型" style="width:100%">
+                	<option value="1">蔬菜</option>
+                	<option value="2">水果</option>
+				</select>
+            </div>
+            <div style="margin-bottom:20px">
+                <input id="price" class="easyui-textbox " name="price" style="width:100%" data-options="label:'商品单价:',required:true">
+            </div>
+            <div style="margin-bottom:20px">
+                <input id="intro" class="easyui-textbox " name="intro" style="width:100%" data-options="label:'产地:',required:true">
+            </div>
+            <div style="margin-bottom:20px">
+                <input id="balance" class="easyui-textbox " name="balance" style="width:100%" data-options="label:'库存:',required:true">
+            </div>
+            <div style="margin-bottom:20px">
+                <input id="unit" class="easyui-textbox " name="unit" style="width:100%" data-options="label:'单位:',required:true">
+            </div>
+            <div style="margin-bottom:20px">
+                <input id="qperied" class="easyui-textbox " name="qperied" style="width:100%" data-options="label:'保质期:',required:true">
+            </div>
+            <div style="margin-bottom:20px">
+                <input id="weight" class="easyui-textbox " name="weight" style="width:100%" data-options="label:'净含量:',required:true">
+            </div>
+            <div style="margin-bottom:20px">
+                <label>菜品图片：</label>
+			<input id="pictures" type="file" name="pictures" data-options="required:true">
+            </div>
+            <div style="margin-bottom:20px">
+                <input id="descr" class="easyui-textbox " name="descr" style="width:100%;height:60px" data-options="label:'商品简介:',multiline:true">
+            </div>
+           <div style="text-align:center;padding:5px 0">
+            	<a href="javascript:void(0)" class="easyui-linkbutton add_goods"  style="width:80px">修改</a>
+        	</div>
+        </form>
+<script type="text/javascript">
+$(function(){
+	$.post("../../goods.action",{op:'findByTrem'},function(data){
+		
+		$('#goodsName').textbox('setText',data[0].goodsName);
+		$('#typeName').textbox('setText',data[0].typeNo);
+		$('#price').textbox('setText',data[0].price);
+		alert($('#price').getText+"222");
+		$('#intro').textbox('setText',data[0].intro);
+		$('#balance').textbox('setText',data[0].balance);
+		$('#unit').textbox('setText',data[0].unit);
+		$('#qperied').textbox('setText',data[0].qperied);
+		$('#weight').textbox('setText',data[0].weight);
+		$('#descr').textbox('setText',data[0].descr);
+	},'json');
+	alert($('#price').getValue+"111");
+});
+
+
+	$('#ffff .add_goods').click(function(){
+		//表单提交
+		$('#ffff').form('submit', {
+		    url:'../../goodsFile.action?op=update',
+		    onSubmit: function(){
+		        // do some check
+		        // return false to prevent submit;
+		    },
+		    success:function(data){
+		        if(data==1){
+		        	$.messager.show({
+		        		title:'温馨提示',
+		        		msg:'商品信息修改成功',
+		        		timeout:5000,
+		        		showType:'slide'
+		        	});
+		        	$('#ffff').form('clear');
+		        }else{
+		        	alert('添加失败');
+		        }
+		    }
+		});
+	});
+
+
+</script>
+       
+

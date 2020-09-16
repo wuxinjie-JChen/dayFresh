@@ -1,0 +1,26 @@
+ul{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.north{
+	height:60px;
+}
+.north ul li{
+	float:left;
+	margin-left: 20px;
+	
+	height:60px;
+	line-height: 60px;
+}
+.north ul li .a{
+	color:red;
+}
+.north ul li{
+	margin-left: 30px;
+	line-height: 60px;
+}
+
+.north ul li a{
+	margin-right: 30px;
+}

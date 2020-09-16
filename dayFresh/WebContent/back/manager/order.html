@@ -1,0 +1,57 @@
+<meta charset="utf-8">
+<div style="margin-top:20px">
+       	<select class="easyui-combobox status" name="state" labelPosition="top" style="width:100px;"
+           data-options="limitToList:true">
+           		<option value="9">所有订单</option>
+           		<option value="0">未支付</option>
+               <option value="2">已发货</option>
+        </select>
+      <input class="orderid" id="orderid" class="easyui-validatebox" placeholder="输入订单编号">
+		<a class="easyui-linkbutton" href="javascript:doSearchOrder()">查询</a>
+</div>
+<table id="show_order"></table> 
+<script type="text/javascript">
+//加载表格
+$('#show_order').datagrid({
+    url:'../../order.action?op=findByPage',
+    
+    pageList:[3,6,9],
+    pageSize:6,
+    pagination:true,//分页的工具栏
+    columns:[[
+        {field:'orderNo',title:'订单编号',width:'15%'},
+        {field:'name',title:'收件人',width:'15%'},
+        {field:'tel',title:'联系电话',width:'15%'},
+        {field:'addrNo',title:'收件人地址',width:'25%',
+        	formatter: function(value,row,index){
+				return row.province+row.city+row.area+row.addr;
+			}},
+        {field:'price',title:'订单金额',width:'15%'},
+        {field:'status',title:'是否发货',width:'15%',
+        	formatter: function(value,row,index){
+				if(row.status==2){
+					return '已发货';
+				}else{
+					return '未发货';
+				}
+		}},
+       	
+    ]],
+    
+});
+
+
+//根据条件查看
+function doSearchOrder(){
+	//获取名称
+	var statu=$('.status').val();
+	var orderid=$('#orderid').val();
+	$('#show_order').datagrid('reload', {
+		statu:statu,
+		orderNo:orderid
+	});
+}
+
+
+</script>
+   

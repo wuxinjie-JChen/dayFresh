@@ -1,0 +1,96 @@
+<meta charset="utf-8">
+<style>
+table#show_goods{
+	height:1000px;
+}
+</style>
+<div style="margin-top:20px;width:100%">
+       	<select class="easyui-combobox types" name="state" labelPosition="top" style="width:100px;"
+           data-options="limitToList:true">
+           		<option value="0">所有类型</option>
+           		<option value="1">新鲜水果</option>
+                <option value="2">海鲜水产</option>
+                <option value="3">猪肉羊肉</option>
+                <option value="4">禽类蛋品</option>
+                <option value="5">新鲜蔬菜</option>
+                <option value="6">速冻食品</option>
+        </select>
+       <label>商品名称：</label><input class="names" class="easyui-validatebox">
+		<a class="easyui-linkbutton" href="javascript:doSearch()">查询</a>
+</div>
+<table id="show_goods" style="height:520px;width:100%"></table> 
+<script type="text/javascript">
+//加载表格
+$('#show_goods').datagrid({
+    url:'../../good.action?op=findPage',
+    
+    pageList:[3,6,9],
+    pageSize:6,
+    pagination:true,//分页的工具栏
+    columns:[[
+        {field:'goodsNo',title:'编号',width:'9%'},
+        {field:'goodsName',title:'产品名称',width:'9%'},
+        {field:'typeName',title:'类别',width:'9%'},
+        {field:'price',title:'单价',width:'9%'},
+        {field:'unit',title:'单位',width:'9%'},
+        {field:'intro',title:'产地',width:'9%'},
+        {field:'weight',title:'净含量',width:'9%'},
+        {field:'qperied',title:'保质期',width:'9%'},
+        {field:'balance',title:'库存',width:'9%'},
+        {field:'pictures',title:'图片',width:'9%',
+        	formatter: function(value,row,index){
+				if(undefined==value){
+					return "未上传图片";
+				}else{
+					return '<img src="../../'+value+'" width="80",height="80">';
+				}
+			}},
+        {field:'aa',title:'操作',width:'10%',
+			formatter: function(value,row,index){
+				return '<a href="javascript:updateGoods('+row.goodsNo+')">修改</a>&nbsp;&nbsp;&nbsp;<a href="javascript:deleteGoods('+row.goodsNo+')">删除</a>';
+			}}
+    ]],
+    
+});
+
+
+//根据条件查看
+function doSearch(){
+	//获取名称
+	var fname=$('.names').val();
+	var types=$('.types').val();
+	$('#show_goods').datagrid('load', {
+		typeNO:types,
+	    goodsName:fname
+	});
+}
+
+//删除
+function deleteGoods(goodsNo){
+	$.post("../../good.action",{op:'deleteGoods',goodsNo:goodsNo},function(data){
+		if(data==1){
+			var tab = $('#show_center').tabs('getSelected');  // 获取选择的面板
+			tab.panel('refresh', 'showGoods.html');
+		}else{
+			alert('删除失败');
+		}
+	});
+	
+}
+
+//修改
+function updateGoods(goodsNo){
+	
+	$('#show_center').tabs('add',{
+		title:'修改',
+		href:'../../good.action?op=saveNo&goodsNo='+goodsNo,
+		fit:true,
+		tools:[{
+		   iconCls:'icon-clear',
+		   handler:function(){
+			   $('#show_center').tabs('close','修改'); 
+		     }
+		 }]
+	});
+}
+   

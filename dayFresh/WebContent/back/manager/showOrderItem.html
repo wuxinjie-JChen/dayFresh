@@ -1,0 +1,175 @@
+<meta charset="UTF-8">
+<style>
+*{
+	margin: 0;
+	padding:0;	
+}
+#showItem ul li{
+	border:1px solid;
+	float:left;
+	width:25%;
+	height:40px;
+	line-height: 40px;
+}
+#showItemTable #gitem{
+	margin-top:20px;
+	border:1px solid;
+	width:100%; 
+	height: 100px;
+	border-collapse: collapse;
+}
+#showItemTable #gitem tr{
+	border:1px solid;
+}
+#showItemTable #gitem tr td{
+	border:1px solid;
+	width:20px;
+	height:100px;
+	text-align: center;
+}
+img .img{
+	width:80px;
+	height: 80px;
+}
+#showItemTable .fh{
+	width:100px;
+	height:60px;
+	font-size:40px;
+	background-color:green;
+	color:white;
+	text-align: center;
+	line-height: 60px;
+	margin-top: 10px;
+	padding-top: 15px;
+}
+</style>
+<div style="margin-top:20px">
+   <input class="orderid" id="orderid_item" class="easyui-validatebox" placeholder="输入订单编号">
+   <input type="hidden">
+   <a class="easyui-linkbutton" href="javascript:doSearchOrderItem()">查询</a>
+</div>
+<div id="showItem" width="100%">
+	<ul>
+		<li>
+			收件人：<span class="names"></span>
+		</li>
+		<li>
+			联系电话：<span class="tels"></span>
+		</li>
+		<li>
+			收件地址：<span class="address"></span>
+		</li>
+		<li>
+			购买时间：<span class="btime"></span>
+		</li>
+		<li>
+			订单编号：<span class="orderid"></span>
+		</li>
+		<li>
+			总金额：<span class="money"></span>
+		</li>
+		<li>
+			支付状态：<span class="zfstatus"></span>
+		</li>
+		<li>
+			是否发货：<span class="gs"></span>
+		</li>
+	</ul>
+</div>
+<div id="showItemTable">
+	<table id="gitem">
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td style="color:green">单价：<span></span></td>
+			<td>数量：<span></span></td>
+			<td>总计<span></span></td>
+			<td>单位：<span></span></td>
+			<td>净含量：<span></span></td>
+		</tr>
+	</table>
+	<a class="easyui-linkbutton fh" data-options="plain:true" href="javascript:fahuo()">发货</a>
+</div>
+<script>
+function fahuo(){
+	var orderid=$('#orderid_item').val();
+	var fh=$('.gs').html();
+	var zfstatu=$('.zfstatus').html();
+	if(zfstatu=='未支付'){
+		alert('该商品未支付,发货失败');
+	}else{
+		$.get("../../order.action",{op:'fahuo',orderNo:orderid,fh:fh},function(data){
+			if(data==1){
+				alert("发货成功");
+			}else if(data==0){
+				alert("发货失败");
+			}
+		});
+	}
+	
+}
+
+function doSearchOrderItem(){
+	var orderid=$('#orderid_item').val();
+	$.get("../../order.action",{op:'findByTrem',orderNo:orderid},function(data){
+		if(data==null||data==""){
+			alert("订单不存在");
+		}else{
+			showUl(data);
+		}
+	},'json');
+	$.post("../../orderItem.action",{op:'showItem',orderNo:orderid},function(data){
+		if(data!=null){
+			showOdItem(data);
+		}
+	},'json');	
+} 
+function showUl(arr){
+	$('.names').html(arr[0].name);
+	$('.tels').html(arr[0].tel);
+	$('.address').html(arr[0].province+arr[0].city+arr[0].area+arr[0].addr);
+	$('.btime').html(arr[0].orderDate);
+	$('.orderid').html(arr[0].orderNo);
+	$('.money').html(arr[0].price);
+	if(arr[0].status==0){
+		$('.zfstatus').html('未支付');
+		$('.gs').html('未发货');
+	}else if(arr[0].status==1){
+		$('.zfstatus').html('已支付');
+		$('.gs').html('未发货');
+	}else if(arr[0].status==2){
+		$('.zfstatus').html('已支付');
+		$('.gs').html('已发货');
+	}
+	
+}
+function showOdItem(arr){
+	
+	$('#gitem').html('');
+	var str='';
+	var total='';
+	for(var i=0;i<arr.length;i++){
+		total=arr[i].nums*arr[i].price;
+		var typename='';
+		if(arr[i].typeNo==1){
+			typename='新鲜水果';
+		}else if(arr[i].typeNo==2){
+			typename='海鲜水产';
+		}else if(arr[i].typeNo==3){
+			typename='猪肉羊肉';
+		}else if(arr[i].typeNo==4){
+			typename='禽类蛋品';
+		}else if(arr[i].typeNo==5){
+			typename='新鲜蔬菜';
+		}else if(arr[i].typeNo==6){
+			typename='速冻食品';
+		}
+		str+='<tr><td><img width="80",height="80" class="img" src="../../'+arr[i].pictures+'"/></td><td>'+arr[i].goodsName+'</td><td>'+typename+'</td>'
+		+'<td style="color:green">单价：<span>'+arr[i].price+'</span></td>'
+		+'<td>数量：<span>'+arr[i].nums+'</span></td><td style="color:red">总计：<span>'+total+'</span></td>'
+		+'<td>单位：<span>'+arr[i].unit+'</span></td><td>净含量：<span>'+arr[i].weight+'</span></td></tr>';
+	}
+	$('#gitem').html(str);
+}
+</script>

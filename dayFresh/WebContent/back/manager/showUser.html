@@ -1,0 +1,22 @@
+<meta charset="UTF-8">
+<table id="showUser"></table>
+<script type="text/javascript">
+//加载表格
+$('#showUser').datagrid({
+    url:'../../member.action?op=showUser',
+    
+    pageList:[3,6,9],
+    pageSize:6,
+    pagination:true,//分页的工具栏
+    columns:[[
+        {field:'meberNo',title:'编号',width:'20%'},
+        {field:'nickName',title:'用户名',width:'20%'},
+        {field:'pwd',title:'密码',width:'20%'},
+        {field:'tel',title:'电话号码',width:'20%'},
+        {field:'email',title:'邮箱',width:'20%'},
+        
+    ]],
+});
+
+
+</script>

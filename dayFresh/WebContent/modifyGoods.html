@@ -1,0 +1,105 @@
+<meta charset="UTF-8">
+<style>
+#ffff label,input{
+	float:left;
+}
+#ffff input{
+	width:60px;
+	height:30px;
+	float:left;
+}
+#ffff div{
+
+	width:400px;
+	height:30px;
+	margin-bottom: 30px;
+	padding-bottom: 10px;
+}	
+</style>
+        <form id="ffff" method="post" enctype="multipart/form-data">
+            <div style="margin-bottom:20px" class="gname">
+                <label style="font-size:20px">商品名称:</label><input id="goodsName" name="goodsName" style="width:300px" data-options="label:'商品名称:',required:true">
+            </div>
+             <div style="margin-bottom:30px">
+                <label style="font-size:20px">商品类型:</label style="height:60px"><select id="typeNo" name="typeNo" style="width:300px">
+                	<option value="1">新鲜水果</option>
+                	<option value="2">海鲜水产</option>
+                	<option value="3">猪肉羊肉</option>
+                	<option value="4">禽类蛋品</option>
+                	<option value="5">新鲜蔬菜</option>
+                	<option value="6">速冻食品</option>
+				</select>
+            </div>
+            <div style="margin-bottom:20px" id="prices">
+             		<label style="font-size:20px">商品单价:</label><input id="price"  name="price" style="width:300px">
+            </div>
+            <div style="margin-bottom:20px">
+                <label style="font-size:20px">商品产地:</label><input id="intro" name="intro" style="width:300px">
+            </div>
+            <div style="margin-bottom:20px">
+                <label style="font-size:20px">商品库存:</label><input id="balance" name="balance" style="width:300px">
+            </div>
+            <div style="margin-bottom:20px">
+                <label style="font-size:20px">单 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位:</label><input id="unit" name="unit" style="width:300px">
+            </div>
+            <div style="margin-bottom:20px">
+                <label style="font-size:20px"> &nbsp;&nbsp;&nbsp;保质期:</label><input id="qperied" name="qperied" style="width:300px">
+            </div>
+            <div style="margin-bottom:20px">
+                <label style="font-size:20px"> &nbsp;&nbsp;&nbsp;净含量:</label><input id="weight" name="weight" style="width:300px">
+            </div>
+            <div style="margin-bottom:20px">
+                <label style="font-size:20px">菜品图片：</label><input id="pictures" type="file" name="pictures" style="width:300px">
+            </div>
+            <div style="margin-bottom:20px">
+                <label style="font-size:20px,text-align:left">商品简介:</label><input id="descr" name="descr" style="width:300px;height:60px">
+            </div>
+           <div style="text-align:center;padding:5px 0">
+            	<a href="javascript:void(0)" class="easyui-linkbutton add_goods"  style="width:80px">修改</a>
+        	</div>
+        </form>
+<script type="text/javascript">
+$(function(){
+	$.post("../../good.action",{op:'findByTrem'},function(data){
+		
+		$('#goodsName').val(data[0].goodsName);
+		$('#typeName').val(data[0].typeNo);
+		$('#price').val(data[0].price);
+		$('#intro').val(data[0].intro);
+		$('#balance').val(data[0].balance);
+		$('#unit').val(data[0].unit);
+		$('#qperied').val(data[0].qperied);
+		$('#weight').val(data[0].weight);
+		$('#descr').val(data[0].descr);
+	},'json');
+});
+
+
+	$('#ffff .add_goods').click(function(){
+		//表单提交
+		$('#ffff').form('submit', {
+		    url:'../../goodsFile.action?op=update',
+		    onSubmit: function(){
+		        // do some check
+		        // return false to prevent submit;
+		    },
+		    success:function(data){
+		        if(data==1){
+		        	$.messager.show({
+		        		title:'温馨提示',
+		        		msg:'商品信息修改成功',
+		        		timeout:5000,
+		        		showType:'slide'
+		        	});
+		        	$('#ffff').form('clear');
+		        }else{
+		        	alert('添加失败');
+		        }
+		    }
+		});
+	});
+
+
+</script>
+       
+
